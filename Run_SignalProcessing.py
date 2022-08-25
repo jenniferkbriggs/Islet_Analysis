@@ -30,7 +30,8 @@ except: #if there is no path, it will ask you to select the folder
 try: #if time is in the first axis, we save it and remove
     time = ca.Time
     ca = ca.drop('Time', axis=1)
-    fs = 
+    tdiff = list(time.diff())
+    fs = 1/np.nanmean(tdiff) #note that the value of this is not Hz but 1/ what ever time interval used (usually ms)
 except:
     print('No time avaliable')
     fs = input('What is the frequency of recording?')
