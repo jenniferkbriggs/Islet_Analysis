@@ -11,6 +11,8 @@ fig_on = True
 global savepath
 savepath = '/Users/jkbriggs/Documents/GitHub/Functional_and_Structural_Networks/Examples/'
 
+lowcut = 0.01
+highcut =  0.5
 
 
 # %% Import packages
@@ -18,6 +20,9 @@ from SignalProcessing import *
 import pandas as pd
 import easygui
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import freqz
+
 
 
 # %%  Load calcium file
@@ -35,4 +40,15 @@ try: #if time is in the first axis, we save it and remove
 except:
     print('No time avaliable')
     fs = input('What is the frequency of recording?')
+# %%
+b, a = butter_bandpass(0.01, 0.05, fs)
+w,h = freqz(b,a)
+
+# %%
+lowcut = 0.01
+highcut =  0.3
+y = butter_bandpass_filter(ca.loc[:,'1'], lowcut, highcut, fs, order=6)
+plt.plot(time, y)
+plt.xlabel('time (seconds)')
+
 # %%

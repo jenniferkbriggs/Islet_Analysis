@@ -1,3 +1,4 @@
+# %%
 from scipy.signal import butter, lfilter
 from scipy.signal import freqz
 
@@ -67,3 +68,5 @@ def run():
 
 
 run()
+
+# %%
