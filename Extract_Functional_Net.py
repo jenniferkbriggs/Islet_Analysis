@@ -55,7 +55,7 @@ def makegraph(thr, cor_mat):
         xint = int(x)
         for y in range(xint+1, len(G.nodes)-1): 
             if cor_mat.iloc[xint,y] > thr:
-                G.add_edge(x,str(y))
+                G.add_edge(x,int(y))
 
     return G
 
@@ -101,7 +101,7 @@ def thr_based_on_degree(cor_mat, k):
     #p = 2m/(n(n-1)): the percent of edges we want compared to the number of possible edges
     #Once p is found, we sort all non-self correlations and find the threshold which returns p percent. 
 
-    p = k/(len(cor_mat)-1)
+    p = 2*k/(len(cor_mat)-1)
     all_cors = np.reshape(list(cor_mat.values), (1,-1)) #1d list of all correlations
     all_cors_sort = sorted(all_cors[0], reverse=True)
     m = (k*len(cor_mat)) #deisred number of edges

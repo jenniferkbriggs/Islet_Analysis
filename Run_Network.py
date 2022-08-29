@@ -8,12 +8,12 @@ fig_on = True
 
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
-savepath = '/Users/jkbriggs/Documents/GitHub/Functional_and_Structural_Networks/Examples/'
+savepath = '/Users/jkbriggs/Documents/GitHub/Islet_Analysis/NetworkExamples/'
 
 # How do you want to define the threshold? 
-#threshold_opts = 'number_of_connections'
-#k = 10
-threshold_opts = 'scalefreeish'
+threshold_opts = 'number_of_connections'
+k = 10
+#threshold_opts = 'scalefreeish'
 min_connect = 5
 max_connect = 20
 
@@ -33,14 +33,11 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import askyesno
 from Extract_Functional_Net import *
-
+from LoadData import *
 
 # %%  Load calcium file
-try: # you can directly add the path to your data here
-    ca = pd.read_csv('/Users/jkbriggs/OneDrive - The University of Colorado Denver/Anschutz/Islet/TempData/Erli_calcium.csv')
-except: #if there is no path, it will ask you to select the folder
-    path = easygui.fileopenbox('Select Time signal file')
-    ca = pd.read_csv(path)
+path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
+ca = LoadData(path)
 
 try: #if time is in the first axis, we save it and remove
     time = ca.Time
@@ -48,6 +45,7 @@ try: #if time is in the first axis, we save it and remove
 except:
     print('No time avaliable')
     timeopt = "No"
+
 
 # %% Compute the correlation matrix
 cor_mat = ca.corr() #computes correlation matrix
