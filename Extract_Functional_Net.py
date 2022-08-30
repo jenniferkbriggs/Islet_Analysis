@@ -55,7 +55,7 @@ def makegraph(thr, cor_mat):
         xint = int(x)
         for y in range(xint+1, len(G.nodes)-1): 
             if cor_mat.iloc[xint,y] > thr:
-                G.add_edge(x,int(y))
+                G.add_edge(x,str(y))
 
     return G
 
