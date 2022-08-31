@@ -1,7 +1,9 @@
 # Islet_Analysis
 This repository contains cleaned and commented code for general analyses conducted on islet timeseries in the Benninger Lab, University of Colorado Anschutz Medical Campus.
 
-Note: The python code is executed under virtual environment for version control purposes. The best way to avoid bugs is to run it in the same virtual environment: type *conda activate ./envs* to activate the environment before you run the files. 
+Note: The python code is executed under virtual environment for version control purposes. The best way to avoid bugs is to run it in the same virtual environment. 
+The first time you clone this code, run: *conda env create -f environment.yml* in the terminal. 
+Then, before every run type *conda activate ./envs* to activate the environment before you run the files. 
 
 ## Network analysis in Python
 ### General Network Analysis: **Run_Network.py**. 
