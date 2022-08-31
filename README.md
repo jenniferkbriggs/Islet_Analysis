@@ -4,8 +4,8 @@ This repository contains cleaned and commented code for general analyses conduct
 
 ## Network analysis in Python
 
-### To run a general network analysis, you will use the code **Run_Network.py**. 
-The first section (lines 5-17) is title options for you to change. This is wheter you define whether you would like figures, where to save the file to. 
+### General Network Analysis: **Run_Network.py**. 
+The first section (lines 5-17) is title options for you to change. This is wheter you define whether you would like figures, where to save the file to. ]
 
 Try typing python3 Run_Network.py in the terminal and you should have success running this code. 
 
@@ -15,7 +15,9 @@ The code depends on the following python packages: csv, collections, networkx, n
 
 
 
-
+## Signal Processing in Python
+###: Filtering data with convolutional window: **Run_SignalProcessing.py**
+This code will first load data using the dependency **LoadData.py** located in the git. The program will create a hamming window with size *windowSize*. *windowSize* is what you will change to alter the frequencies of the filter. Note that the window size is based on enumerated time, not real time. (e.g. the size 40 is 40 data points not 40 seconds.)
 
 ## Loading data
 The function file **LoadData** is an easy way to load time series data and get it into a csv form ready for the rest of the analyses. Currently it can load .csv and .cmcr files. 
