@@ -248,7 +248,7 @@ def getTestData(sd):
         #y and x are swapped in the raw data in this case for no apparent reason
         for x in range(sdata.shape[1]):
             for y in range(sdata.shape[2]):
-                print('x: ', x+min_x , ' y: ', y+min_y)
+                #print('x: ', x+min_x , ' y: ', y+min_y)
                 conversionFactor = int(conversionFactors[counter]) / 1000
                 electrodes.append(Electrode(x+min_x,y+min_y,conversionFactor, sdata[:,x,y]))
                 dictionary[x+min_x][y+min_y] = counter

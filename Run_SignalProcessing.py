@@ -7,12 +7,14 @@
 # set to true if you'd like to see and save figures. set to false if you don't need figures
 fig_on = True
 
+# Define window size
+windowSize = 4000
+
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
-savepath = '/Users/jkbriggs/Documents/GitHub/Functional_and_Structural_Networks/Examples/'
 
-lowcut = 0.1
-highcut =  0.4
+lowcut = 1/10000
+highcut =  100
 
 
 # %% Import packages
@@ -29,6 +31,7 @@ import scipy
 
 # %%  Load calcium file
 path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
+savepath = '/Users/jkbriggs/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/'
 ca = LoadData(path)
 
 # %%  Load calcium file
@@ -40,37 +43,62 @@ try: #if time is in the first axis, we save it and remove
 except:
     print('No time avaliable')
     fs = int(input('What is the frequency of recording?'))
-# %%
-
-freqs = rfft(np.array(ca.iloc[:,3]))
-plt.plot(freqs[0:1000])
-# %% 
-
-b, a = scipy.signal.butter(3, [lowcut, highcut], 'band', fs = fs)
-filteredBandPass = scipy.signal.lfilter(b, a, ca)
-
-plt.plot(filteredBandPass[:,1])
-# %%
-b, a = scipy.signal.butter(3, 0.000049, 'lowpass', fs = 1/fs)
-filteredLowPass = scipy.signal.filtfilt(b, a, ca)
-
-# b, a = scipy.signal.butter(3, 0.9, 'highpass', fs = fs)
-# filteredHighPass = scipy.signal.filtfilt(b, a, ca)
-
-
-plt.plot(time, ca.iloc[:,3])
-plt.plot(time, filteredLowPass[:,3])
-#plt.xlim([1,20])
-
-#plt.plot(filteredHighPass[:,49])
 
 # %%
-windowSize = 400
 window = np.hanning(windowSize)
 window = window / window.sum()
 
 # filter the data using convolution
-filtered = np.convolve(window, ca.iloc[:,3], mode='valid')
-plt.plot(filtered)
+slowar = np.apply_along_axis(lambda m: np.convolve(window, m, mode='same'), axis=0, arr=ca)
+fast = ca - slowar
+
 # %%
+slow = pd.DataFrame(slowar)
+slow["Time"] = time
+fast["Time"] = time
+
+#save
+if 'savepath' not in locals():
+    savepath = easygui.diropenbox('Select Folder to Save Data In')
+    savepath = savepath + savepath[0] #adds slash
+try: 
+    slow.to_csv(savepath + 'Slow.csv', index=False)
+    fast.to_csv(savepath + 'Fast.csv', index=False)
+except:
+    print('Save path is not working')
+    savepath = easygui.diropenbox('Select Folder to Save Data In')
+    savepath = savepath + savepath[0] #adds slash
+    slow.to_csv(savepath + 'Slow.csv', index=False)
+    fast.to_csv(savepath + 'Fast.csv', index=False)
+
+if fig_on == True: #save and close figures
+    plt.plot(time, slowar[:,3])
+    plt.title('Low Frequency')
+    plt.xlabel('Time')
+    plt.ylabel('Voltage')
+    plt.savefig(savepath + 'LowFreq.png')
+    plt.clf 
+
+    plt.plot(time, fast.iloc[:,3])
+    plt.title('High Frequency')
+    plt.xlabel('Time')
+    plt.ylabel('Voltage')
+    plt.savefig(savepath + 'HighFreq.png')
+    plt.clf #close
+
+print('Done')
+# %% Forier Filtering
+# freqs = rfft(np.array(ca.iloc[:,3]))
+# plt.plot(freqs[0:1000])
+# # %% 
+
+# b, a = scipy.signal.butter(3, [lowcut, highcut], 'band', fs = fs)
+# filteredBandPass = scipy.signal.lfilter(b, a, ca)
+# plt.plot(time, ca.iloc[:,4])
+# plt.plot(time, filteredBandPass[:,4])
+
+
+# %% 
+#df = pd.DataFrame(filteredBandPass)
+#plt.plot(filteredHighPass[:,49])
 
