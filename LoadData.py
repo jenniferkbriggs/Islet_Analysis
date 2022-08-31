@@ -18,11 +18,12 @@ def LoadData(path = 0):
 
     #load file based on file type
     if path[-3:int(len(path))] == 'csv':
-        ca = pd.read_csv(path)
+        ca = pd.read_csv(path, index_col=False)
+
     elif path[-3:int(len(path))] == 'mcr': #Anne's electrode data
         sd, td = OpenPrefined(path)
         #Electrode data is stored by x,y values. We will index them first along the x, then y. 
-        # For example, [1,1] = 0, [2, 1] = 1, [1,2] = len(x)
+        # For example, [1,1] = 0, [1, 2] = 1, [2, 1] = len(y)
         numcell = (td.max_x - td.min_x+1)*(td.max_y - td.min_y+1)
         time = td.getElectrode(td.min_x, td.min_y)
         time = len(time.values)
@@ -30,11 +31,13 @@ def LoadData(path = 0):
 
         print('Reshaping Values')
         loc = np.empty([2,numcell])
+        dat = dict()
         i = 0
         for y in range(td.min_y, td.max_y+1):
             for x in range(td.min_x, td.max_x+1):
                 electrode = td.getElectrode(x,y)
-                dat[:,i] = list(electrode.values)
+                #dat[:,i] = list(electrode.values)
+                dat.update({str(x) + ',' + str(y): list(electrode.values)})
                 loc[:,i] = [x,y]
                 i = i+1
                 
@@ -43,9 +46,8 @@ def LoadData(path = 0):
         timeall = np.arange(0,int(time/fs),1/fs)
         ca = pd.DataFrame(dat)
         ca['Time'] = timeall
-        #return loc
-
-    return ca #[cells x time]
+    print('Loaded Data Correctly')
+    return ca 
 # %%
 
 

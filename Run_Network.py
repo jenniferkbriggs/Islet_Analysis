@@ -8,12 +8,14 @@ fig_on = True
 
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
-savepath = '/Users/jkbriggs/Documents/GitHub/Islet_Analysis/NetworkExamples/'
+#savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
+path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
 
-# How do you want to define the threshold? 
-threshold_opts = 'number_of_connections'
-k = 10
-#threshold_opts = 'scalefreeish'
+# How do you want to define the threshold? (Either number_of_connections or scalefreeish)
+#threshold_opts = 'number_of_connections'
+k = 6
+
+threshold_opts = 'scalefreeish'
 min_connect = 5
 max_connect = 20
 
@@ -35,9 +37,11 @@ from tkinter.messagebox import askyesno
 from Extract_Functional_Net import *
 from LoadData import *
 
-# %%  Load calcium file
-path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
-ca = LoadData(path)
+# %%  Load timeseries file
+if 'path' in locals():
+    ca = LoadData(path)
+else:
+    ca = LoadData()
 
 try: #if time is in the first axis, we save it and remove
     time = ca.Time
@@ -56,6 +60,7 @@ if fig_on:
     cb.ax.tick_params(labelsize=14)
     plt.title('Correlation Matrix', fontsize=16)
     if 'savepath' not in locals():
+        print('Select folder to save data in')
         savepath = easygui.diropenbox('Select Folder to Save Data In')
         savepath = savepath + savepath[0] #adds slash
     try: 
@@ -76,41 +81,41 @@ cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_m
 
 # NOT WORKING
 #If how to set threshold is not predefined, choose how to set through gui 
-if 'threshold_opts' not in locals():
-    root = tk.Tk()
+# if 'threshold_opts' not in locals():
+#     root = tk.Tk()
 
-    # click event handler
-    def b_degree():
-        threshold_opts = 'number_of_connections'
-        min_connect = 5
-        max_connect = 20
+#     # click event handler
+#     def b_degree():
+#         threshold_opts = 'number_of_connections'
+#         min_connect = 5
+#         max_connect = 20
 
-        print('done')
-        root.destroy()
-        return threshold_opts
+#         print('done')
+#         root.destroy()
+#         return threshold_opts
     
-    def b_scalefree():
-        threshold_opts = 'scalefreeish'
-        print('done')
-        root.destroy()
-        return threshold_opts
+#     def b_scalefree():
+#         threshold_opts = 'scalefreeish'
+#         print('done')
+#         root.destroy()
+#         return threshold_opts
 
 
-    top = ttk.Frame(root)
-    bottom = ttk.Frame(root)
+#     top = ttk.Frame(root)
+#     bottom = ttk.Frame(root)
 
-    top.pack(side=tk.TOP)
-    bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+#     top.pack(side=tk.TOP)
+#     bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-    # create the widgets for the top part of the GUI,
-    # and lay them out
-    b = ttk.Button(root, text="Predefined average degre", command=b_degree)
-    c = ttk.Button(root, text="Scale Free (ish)",  command=b_scalefree)
-    b.pack(in_=top, side=tk.LEFT)
-    c.pack(in_=top, side=tk.LEFT)
+#     # create the widgets for the top part of the GUI,
+#     # and lay them out
+#     b = ttk.Button(root, text="Predefined average degre", command=b_degree)
+#     c = ttk.Button(root, text="Scale Free (ish)",  command=b_scalefree)
+#     b.pack(in_=top, side=tk.LEFT)
+#     c.pack(in_=top, side=tk.LEFT)
 
-    # start the app
-    root.mainloop()
+#     # start the app
+#     root.mainloop()
 
 
 # %%
@@ -135,7 +140,11 @@ if fig_on:
     net = Network(notebook = True)
     net.from_nx(G)
     net.show(savepath + "network.html")
-    deg_seq = lookatnetwork(G, savepath)
+
+    if type(list(G.nodes)[0]) is str: #node names are the positions
+        positions = {i:list(map(int, i.split(","))) for i in G.nodes}
+
+    deg_seq = lookatnetwork(G, savepath, positions)
 
 
 #save adjacency list
@@ -154,7 +163,8 @@ sixtypercentdegree = (max(list(deg.values()))*0.6)
 centralhubs = {k:v for (k,v) in deg.items() if v >= sixtypercentdegree}
 
 
-net_stats = {'Degree': 2*G.number_of_edges()/G.number_of_nodes(), 
+net_stats = {'Average_Correlation': np.mean(list(cor_mat.values)),
+'Degree': 2*G.number_of_edges()/G.number_of_nodes(), 
 'Clustering': nx.average_clustering(G), 
 'Global_Efficiency': nx.global_efficiency(G),
 'Local_efficiency': nx.local_efficiency(G),
