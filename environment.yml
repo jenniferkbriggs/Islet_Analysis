@@ -1,4 +1,4 @@
-name: /Users/jkbriggs/Documents/GitHub/Islet_Analysis/envs
+name: envs
 channels:
   - defaults
   - conda-forge
