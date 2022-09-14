@@ -8,14 +8,17 @@ fig_on = True
 
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
+savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
+path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
+
 #savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
-path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
+#path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
 
 # How do you want to define the threshold? (Either number_of_connections or scalefreeish)
-#threshold_opts = 'number_of_connections'
+threshold_opts = 'number_of_connections'
 k = 6
 
-threshold_opts = 'scalefreeish'
+#threshold_opts = 'scalefreeish'
 min_connect = 5
 max_connect = 20
 

@@ -12,6 +12,8 @@ windowSize = 4000
 
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
+#path = '~/Dropbox/CMOS data/210720_3985_G10.cmcr'
+savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/'
 
 lowcut = 1/10000
 highcut =  100
@@ -30,9 +32,12 @@ import scipy
 
 
 # %%  Load calcium file
-path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
-savepath = '/Users/jkbriggs/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/'
-ca = LoadData(path)
+
+if 'path' in locals():
+    ca = LoadData(path)
+else:
+    ca = LoadData()
+
 
 # %%  Load calcium file
 try: #if time is in the first axis, we save it and remove
@@ -45,6 +50,7 @@ except:
     fs = int(input('What is the frequency of recording?'))
 
 # %%
+print('Filtering Data...')
 window = np.hanning(windowSize)
 window = window / window.sum()
 
@@ -54,6 +60,7 @@ fast = ca - slowar
 
 # %%
 slow = pd.DataFrame(slowar)
+slow.columns = list(fast.head())
 slow["Time"] = time
 fast["Time"] = time
 
