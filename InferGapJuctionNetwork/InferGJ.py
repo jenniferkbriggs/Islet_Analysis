@@ -1,6 +1,15 @@
 ## InferGJ.py
 # This code uses FRAP data from Farnsworth et al. 2014 to infer many different configurartions of GJ weights and networks in the islet
-
+# %%
+from asyncio import base_tasks
+from itertools import product
+import math
+import networkx as nx
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy import optimize as op
+import random
 # %% Define optimization function
 def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
     for i, x in enumerate(G.edges):
@@ -15,33 +24,20 @@ def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
     conduct = nx.get_node_attributes(G,'Conduct')
     x = list(conduct.values())
     tot_error = cost(x, gjconduct, gjfreq)
-    print(tot_error)
     return tot_error
-
 
 def calc_conduct(edgeweights, G, gjconduct, gjfreq):
     for i, x in enumerate(G.edges):
-        G.edges[x[0],x[1]]['weight']=edgeweights[i]
+        G.edges[x[0],x[1]]['weight']=str(edgeweights[i])
 
     for node in G.nodes:
         tot_cond = 0
         for i in list(G.neighbors(node)):
-            tot_cond = tot_cond+G.get_edge_data(node,i)['weight']
-        G.nodes[node]['Conduct'] = tot_cond
+            tot_cond = tot_cond+float(G.get_edge_data(node,i)['weight'])
+        G.nodes[node]['Conduct'] = str(tot_cond)
     conduct = nx.get_node_attributes(G,'Conduct')
-    x = list(conduct.values())
-
-
-    hist = np.zeros(np.shape(gjfreq))
-    gjconduct.append(1000)
-    for i in range(0, len(gjconduct)-1):
-        if i == 0:
-            hist[i] = len([k for k in x if k <= gjconduct[i]])/len(x)
-        else:
-            hist[i] = len([k for k in x if k <= gjconduct[i] and k > gjconduct[i-1]])/len(x)
-    gjconduct.pop()
-
-    return hist, G
+    x = [float(i) for i in list(conduct.values())]
+    return G
 
 
 def cost(x,gjconduct,gjfreq):
@@ -56,17 +52,10 @@ def cost(x,gjconduct,gjfreq):
     gjconduct.pop()
     tot_err = np.linalg.norm(np.subtract(hist, gjfreq))
     return tot_err
-# %%
-from asyncio import base_tasks
-from itertools import product
-import math
-import networkx as nx
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy import optimize as op
 
-def run_netorkbuild(itter):
+
+def run_networkbuild(itter):
+    random.seed(itter)
     # %% First build a 3D network with sphere packing:
     b_diameter = 10 #diameter of beta cell: mu m
     i_area = 10000 #diameter of islet: mu m^2
@@ -90,7 +79,7 @@ def run_netorkbuild(itter):
     G.add_nodes_from(range(0,len(beta_positions)))
     positions_dict = {i:list(beta_positions[i]) for i in G.nodes}
     for n in G.nodes:
-        G.nodes[n]['pos'] = positions_dict[n]
+        G.nodes[n]["pos"] = positions_dict[n]
     thr = 6 #How far away the edge can be.
     node_sort = np.argsort(-edgedist)
     used_nodes=[]
@@ -126,13 +115,22 @@ def run_netorkbuild(itter):
     gj_freq = list(gjdist.iloc[0,:])
     # %%
     edgeweights_0 = np.random.normal(1.22/6.38, 0.16/6.38, len(G.edges)) 
-    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),maxiter=400)
+    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),maxiter=1e3)
 
     # %%
     err = calc_conduct_optim(final_weights, G, gj_conduct, gj_freq)
-    [hist, G] = calc_conduct(final_weights, G, gj_conduct, gj_freq)
-
-
+    print(err)
+    G2 = calc_conduct(final_weights, G, gj_conduct, gj_freq)
+    
+    for i in range(0, len(G2.nodes)):
+        G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
+        G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
+    
     if err < 0.1:
-        nx.write_graphml(G, str(itter)+str(err)+'.gml')
+        nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
+
+if __name__ == "__main__":
+    for i = 1:range(100000):
+        run_networkbuild(i)
+
 # %%
