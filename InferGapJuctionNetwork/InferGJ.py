@@ -130,7 +130,7 @@ def run_networkbuild(itter):
         nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
-    for i = 1:range(100000):
+    for i in range(0,100000):
         run_networkbuild(i)
 
 # %%
