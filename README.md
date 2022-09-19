@@ -6,6 +6,8 @@ The first time you clone this code, run: *conda env create -f environment.yml* i
 Then, before every run type *conda activate ./envs* to activate the environment before you run the files.
 
 ### Image Processing in MatLab
+*This description is not complete*
+The matlab file: Extracting_individual_cells.m is a script used to load calcium images and manually circle the cells. After all of the cells have been identified, the script will run *STD_analysis.m* which removes pixels from cells whose timecourses are too different from the rest of the cell. The script will output the final cell mask and the calcium csv file which contains timecourse for each cell.
 
 ## Network analysis in Python
 ### General Network Analysis: **Run_Network.py**.
