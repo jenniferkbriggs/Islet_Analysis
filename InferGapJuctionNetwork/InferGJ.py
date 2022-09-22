@@ -8,8 +8,11 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy.random as npr
 from scipy import optimize as op
 import random
+import seaborn as sns
+
 # %% Define optimization function
 def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
     for i, x in enumerate(G.edges):
@@ -24,6 +27,7 @@ def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
     conduct = nx.get_node_attributes(G,'Conduct')
     x = list(conduct.values())
     tot_error = cost(x, gjconduct, gjfreq)
+    print(tot_error)
     return tot_error
 
 def calc_conduct(edgeweights, G, gjconduct, gjfreq):
@@ -53,21 +57,21 @@ def cost(x,gjconduct,gjfreq):
     tot_err = np.linalg.norm(np.subtract(hist, gjfreq))
     return tot_err
 
-
+# %%
 def run_networkbuild(itter):
     random.seed(itter)
-    # %% First build a 3D network with sphere packing:
+    # First build a 3D network with sphere packing:
     b_diameter = 10 #diameter of beta cell: mu m
     i_area = 10000 #diameter of islet: mu m^2
     perc_b = .80 #percent of beta cells in the islet
     i_radius = (i_area/math.pi)**(1/2)
 
     beta_num = int(perc_b*i_area/b_diameter)
-    # %% Add edges
+    #% Add edges
     #1. Randomly pick edge distrutions
     edgedist = np.random.normal(6.38+0.6, 1.35, beta_num) 
 
-    # %% Pack 3D grid with cells
+    #% Pack 3D grid with cells
     grid_rad = int(i_radius/b_diameter)
     points_inside_grid = product(range(-grid_rad,grid_rad),range(-grid_rad,grid_rad),range(-grid_rad,grid_rad))
     points_inside_grid = list(points_inside_grid)
@@ -108,17 +112,18 @@ def run_networkbuild(itter):
     print(np.mean(degree_sequence))
     print(np.std(degree_sequence))
 
-    # %% Assign GJ weighting such that the histogram looks like GJdist
-    # %% 
+    #Assign GJ weighting such that the histogram looks like GJdist
+    #
     gjdist = pd.read_csv('TotGJConductDistribution.csv')
     gj_conduct = [float(item)*203 for item in list(gjdist)]
     gj_freq = list(gjdist.iloc[0,:])
-    # %%
-    edgeweights_0 = np.random.normal(1.22/6,1.2/6 , G.number_of_edges())
+    #
+    edgeweights_0 = npr.poisson(122/8, size=G.number_of_edges())/100
+    plt.hist(edgeweights_0)
     edgeweights_0 = [1e-5 if x<=0 else x for x in edgeweights_0] 
     final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-15,maxiter=1e10)
 
-    # %%
+    
     err = calc_conduct_optim(final_weights, G, gj_conduct, gj_freq)
     print(err)
     G2 = calc_conduct(final_weights, G, gj_conduct, gj_freq)
@@ -127,11 +132,11 @@ def run_networkbuild(itter):
         G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
         G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
     
-    if err < 0.3:
+    if err < 0.22:
         nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
-    for i in range(400,100000):
+    for i in range(1):
         run_networkbuild(i)
 
 # %%
