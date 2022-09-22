@@ -5,6 +5,10 @@ Note: The python code is executed under virtual environment for version control 
 The first time you clone this code, run: *conda env create -f environment.yml* in the terminal.
 Then, before every run type *conda activate ./envs* to activate the environment before you run the files.
 
+### Image Processing in MatLab
+*This description is not complete*
+The matlab file: Extracting_individual_cells.m is a script used to load calcium images and manually circle the cells. After all of the cells have been identified, the script will run *STD_analysis.m* which removes pixels from cells whose timecourses are too different from the rest of the cell. The script will output the final cell mask and the calcium csv file which contains timecourse for each cell.
+
 ## Network analysis in Python
 ### General Network Analysis: **Run_Network.py**.
 The first section (lines 5-17) is title options for you to change. This is wheter you define whether you would like figures, where to save the file to. ]
@@ -18,10 +22,10 @@ The code depends on the following python packages: csvkit, collection, networkx,
 
 
 ## Signal Processing in Python
-### : Filtering data with convolutional window: **Run_SignalProcessing.py**
+###  Filtering data with convolutional window: **Run_SignalProcessing.py**
 This code will first load data using the dependency **LoadData.py** located in the git. The program will create a hamming window with size *windowSize*. *windowSize* is what you will change to alter the frequencies of the filter. Note that the window size is based on enumerated time, not real time. (e.g. the size 40 is 40 data points not 40 seconds.)
 
-## Loading data
+### Loading data
 The function file **LoadData** is an easy way to load time series data and get it into a csv form ready for the rest of the analyses. Currently it can load .csv and .cmcr files.
 
 ### Dependencies:
