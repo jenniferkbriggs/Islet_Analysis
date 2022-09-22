@@ -114,8 +114,9 @@ def run_networkbuild(itter):
     gj_conduct = [float(item)*203 for item in list(gjdist)]
     gj_freq = list(gjdist.iloc[0,:])
     # %%
-    edgeweights_0 = np.random.normal(1.22/6.38, 0.16/6.38, len(G.edges)) 
-    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),maxiter=1e3)
+    edgeweights_0 = np.random.normal(1.22/6,1.2/6 , G.number_of_edges())
+    edgeweights_0 = [1e-5 if x<=0 else x for x in edgeweights_0] 
+    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-15,maxiter=1e10)
 
     # %%
     err = calc_conduct_optim(final_weights, G, gj_conduct, gj_freq)
@@ -126,11 +127,11 @@ def run_networkbuild(itter):
         G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
         G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
     
-    if err < 0.1:
+    if err < 0.3:
         nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
-    for i in range(0,100000):
+    for i in range(400,100000):
         run_networkbuild(i)
 
 # %%
