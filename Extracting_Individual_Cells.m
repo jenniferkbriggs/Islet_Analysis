@@ -195,12 +195,12 @@ catch
     %clear images MaskedIMGstack;
     try
     saveas(TCFig,[savepath '\Cellintestiy.tif']); %Saves figure of each cell's timecourse
-    save([savepath '\CaWaveForm.mat'],'CellTC')
+    save([savepath savename '\CaWaveForm.mat'],'CellTC')
     catch
         mkdir(savepath)
-        saveas(TCFig,[savepath '\Cellintestiy.tif']); %Saves figure of each cell's timecourse
+        saveas(TCFig,[savepath savename '\Cellintestiy.tif']); %Saves figure of each cell's timecourse
     end
-    save([savepath '\CaWaveForm.mat'],'CellTC')
+    save([savepath savename '\CaWaveForm.mat'],'CellTC')
     numad = 1+ numad
     clearvars -except Vidinfo starttime endtime zstacks howmanychannel nuchannel cachannel savename gstart ending filepath ff F imagepaths folderpaths numad AdjacencyAll l g zz zstacks cachannel
    
