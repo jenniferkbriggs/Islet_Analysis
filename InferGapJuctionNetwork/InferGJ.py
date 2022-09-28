@@ -10,8 +10,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy.random as npr
 from scipy import optimize as op
+import scipy.stats as stats 
 import random
 import seaborn as sns
+
+# %% Define skew
+def skew_norm_pdf(x,e=0,w=1,a=0):
+    # adapated from:
+    # http://stackoverflow.com/questions/5884768/skew-normal-distribution-in-scipy
+    t = (x-e) / w
+    return 2.0 * w * stats.norm.pdf(t) * stats.norm.cdf(a*t)
 
 # %% Define optimization function
 def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
@@ -27,7 +35,7 @@ def calc_conduct_optim(edgeweights, G, gjconduct, gjfreq):
     conduct = nx.get_node_attributes(G,'Conduct')
     x = list(conduct.values())
     tot_error = cost(x, gjconduct, gjfreq)
-    print(tot_error)
+    #print(tot_error)
     return tot_error
 
 def calc_conduct(edgeweights, G, gjconduct, gjfreq):
@@ -118,10 +126,16 @@ def run_networkbuild(itter):
     gj_conduct = [float(item)*203 for item in list(gjdist)]
     gj_freq = list(gjdist.iloc[0,:])
     #
-    edgeweights_0 = npr.poisson(122/8, size=G.number_of_edges())/100
-    plt.hist(edgeweights_0)
+    x=np.linspace(0,1.22,G.number_of_edges())
+    edgeweights_0 = skew_norm_pdf(x,1.22/8,0.5,-0.1)
+    #random.shuffle(edgeweights_0)
+    #edgeweights_0 = npr.poisson(122/4, size=G.number_of_edges())/100
+    edgeweights_dist = npr.weibull(5, size=G.number_of_edges())/100
+    edgeweights_0 = np.interp(edgeweights_0, (edgeweights_0.min(),edgeweights_0.max()), (0, 1.22/3.5))
+    #plt.hist(edgeweights_0)
+    #print(edgeweights_0.mean())
     edgeweights_0 = [1e-5 if x<=0 else x for x in edgeweights_0] 
-    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-15,maxiter=1e10)
+    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-25,maxiter=1e10)
 
     
     err = calc_conduct_optim(final_weights, G, gj_conduct, gj_freq)
@@ -132,7 +146,7 @@ def run_networkbuild(itter):
         G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
         G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
     
-    if err < 0.22:
+    if err < 0.18:
         nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
