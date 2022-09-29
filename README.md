@@ -5,9 +5,12 @@ Note: The python code is executed under virtual environment for version control 
 The first time you clone this code, run: *conda env create -f environment.yml* in the terminal.
 Then, before every run type *conda activate ./envs* to activate the environment before you run the files.
 
-### Image Processing in MatLab
+## Image Processing in MatLab
 *This description is not complete*
-The matlab file: Extracting_individual_cells.m is a script used to load calcium images and manually circle the cells. After all of the cells have been identified, the script will run *STD_analysis.m* which removes pixels from cells whose timecourses are too different from the rest of the cell. The script will output the final cell mask and the calcium csv file which contains timecourse for each cell.
+The matlab file: *Extracting_individual_cells.m* is a script used to load calcium images and manually circle the cells. After all of the cells have been identified, the script will run *STD_analysis.m* which removes pixels from cells whose timecourses are too different from the rest of the cell. The script will output the final cell mask and the calcium csv file which contains timecourse for each cell.
+
+## Network Analysis in Matlab
+After you run *Extracting_individual_cells.m*, you will have a .mat file with all CaWaveForm.mat. To run general network analysis, you will open *RunNetworkAnalysis.m* and add the file location to this .mat file under capath
 
 ## Network analysis in Python
 ### General Network Analysis: **Run_Network.py**.
