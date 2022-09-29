@@ -11,9 +11,9 @@ cachannel = 1;
 nuchannel = 2;
 howmanychannel = 1;
 
-filename = '/Volumes/Briggs_10TB/SizeDependence/Analysis/Images/VidInfo.mat' %file name can direct to '.mat' analysis file or imaging file
-savepath = '/Users/brigjenn/OneDrive - The University of Colorado Denver/Anschutz/Islet/STDanalysis/'
-savename = '/PlaywithSTD.mat'
+filename = '/Users/levittcl/Documents/Research/DATA/gCAMP - Calcium Imaging/2022_06_16/gCAMP_islet1_control_2mM_11mM_KCl.czi' %file name can direct to '.mat' analysis file or imaging file
+savepath = '/Users/levittcl/Documents/Hub Analysis/'
+savename = '/hubanalysistest.mat'
 
 
 
@@ -68,16 +68,16 @@ T = double(T);
 T = T(cachannel:howmanychannel:end);
 
 
-if starttime(ff) == -1
+if starttime == -1
     st = 1;
 else
-    st = starttime(ff);
+    st = starttime;
 end
 
-if endtime(ff) == -1
+if endtime == -1
     ed=length(T);
 else
-    ed=endtime(ff);
+    ed=endtime;
 end
 
 T = T(st:ed);
@@ -190,19 +190,16 @@ catch
     % Plotting traces for entire time course
     TCFig = figure('Name','Average Intensity Over Time');
     plot(CellTC);
-    legend(PlotLabels);
-    title(F(ff).name)
+    
     %clear images MaskedIMGstack;
     try
-    saveas(TCFig,[savepath '\Cellintestiy.tif']); %Saves figure of each cell's timecourse
-    save([savepath savename '\CaWaveForm.mat'],'CellTC')
+    saveas(TCFig,[savepath '/Cellintestiy.tif']); %Saves figure of each cell's timecourse
+    save([savepath savename '/CaWaveForm.mat'],'CellTC')
     catch
         mkdir(savepath)
-        saveas(TCFig,[savepath savename '\Cellintestiy.tif']); %Saves figure of each cell's timecourse
+        saveas(TCFig,[savepath savename '/Cellintestiy.tif']); %Saves figure of each cell's timecourse
     end
-    save([savepath savename '\CaWaveForm.mat'],'CellTC')
-    numad = 1+ numad
-    clearvars -except Vidinfo starttime endtime zstacks howmanychannel nuchannel cachannel savename gstart ending filepath ff F imagepaths folderpaths numad AdjacencyAll l g zz zstacks cachannel
+    save([savepath savename '/CaWaveForm.mat'],'CellTC')
    
 end
 

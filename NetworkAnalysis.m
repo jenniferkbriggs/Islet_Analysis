@@ -99,10 +99,13 @@ xlab = [1:length(histArrayPercShort)];
 xlab(isinf(loghist))=[];
 loghist(isinf(loghist))=[];
 
-
+try
 [s] = corrcoef(log(xlab),loghist);
 s = s(2);
-%
+catch
+    s = 0
+end
+
 if figs
     figure(fig)           % plot a bar graph of the probability of a cell to have k links
     fig = fig+1;
