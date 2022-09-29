@@ -135,7 +135,7 @@ def run_networkbuild(itter):
     #plt.hist(edgeweights_0)
     #print(edgeweights_0.mean())
     edgeweights_0 = [1e-5 if x<=0 else x for x in edgeweights_0] 
-    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-25,maxiter=1e10)
+    final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-15,maxiter=1e10)
 
     
     err = calc_conduct_optim(final_weights, G, gj_conduct, gj_freq)
@@ -146,11 +146,11 @@ def run_networkbuild(itter):
         G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
         G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
     
-    if err < 0.18:
+    if err < 0.16:
         nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
-    for i in range(1):
+    for i in range(1,150):
         run_networkbuild(i)
 
 # %%
