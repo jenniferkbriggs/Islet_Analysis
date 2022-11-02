@@ -62,22 +62,20 @@ def cost(x,gjconduct,gjfreq):
         else:
             hist[i] = len([k for k in x if k <= gjconduct[i] and k > gjconduct[i-1]])/len(x)
     gjconduct.pop()
-    tot_err = np.linalg.norm(np.subtract(hist, gjfreq))
+    tot_err = np.linalg.norm((hist, gjfreq))
+    #print(tot_err)
     return tot_err
 
 # %%
-def run_networkbuild(itter):
+def run_networkbuild(itter, area):
     random.seed(itter)
     # First build a 3D network with sphere packing:
     b_diameter = 10 #diameter of beta cell: mu m
-    i_area = 10000 #diameter of islet: mu m^2
+    i_area = area #10000 #diameter of islet: mu m^2
     perc_b = .80 #percent of beta cells in the islet
     i_radius = (i_area/math.pi)**(1/2)
 
-    beta_num = int(perc_b*i_area/b_diameter)
     #% Add edges
-    #1. Randomly pick edge distrutions
-    edgedist = np.random.normal(6.38+0.6, 1.35, beta_num) 
 
     #% Pack 3D grid with cells
     grid_rad = int(i_radius/b_diameter)
@@ -86,6 +84,9 @@ def run_networkbuild(itter):
     positions = [columns for columns in points_inside_grid if (columns[1]**2+columns[2]**2+columns[0]**2)**(1/2)<i_radius]
     beta_positions = np.array(positions)[np.random.choice(len(positions), size=int(perc_b*len(positions)), replace=False)]
 
+    #1. Randomly pick edge distrutions
+    edgedist = np.random.normal(6.38+0.6, 1.35, len(beta_positions)) 
+    print('Number of Beta Cells' + str(len(edgedist)))
     # Fill a network of radius i_radius with betacells
     G = nx.Graph()
     G.add_nodes_from(range(0,len(beta_positions)))
@@ -128,13 +129,26 @@ def run_networkbuild(itter):
     #
     x=np.linspace(0,1.22,G.number_of_edges())
     edgeweights_0 = skew_norm_pdf(x,1.22/8,0.5,-0.1)
-    #random.shuffle(edgeweights_0)
+    #edgeweights_0 = np.random.normal(1.22/3, 0.5, np.size(x))
+    #edgeweights_0 = np.random.uniform(0, 1.22, np.size(x))
     #edgeweights_0 = npr.poisson(122/4, size=G.number_of_edges())/100
-    edgeweights_dist = npr.weibull(5, size=G.number_of_edges())/100
+    #edgeweights_0 = npr.weibull(5, size=G.number_of_edges())/100
     edgeweights_0 = np.interp(edgeweights_0, (edgeweights_0.min(),edgeweights_0.max()), (0, 1.22/3.5))
     #plt.hist(edgeweights_0)
     #print(edgeweights_0.mean())
     edgeweights_0 = [1e-5 if x<=0 else x for x in edgeweights_0] 
+    
+    # --- particle swarm ----- #
+    #options = {'c1': 0.5, 'c2': 0.3, 'w':0.9}
+    #x_max = 1.22 * np.ones(len(edgeweights_0))
+    #x_min = 1.22 * np.ones(len(edgeweights_0))
+    #bounds = (x_min, x_max)
+    #optimizer = GlobalBestPSO(n_particles=3000, dimensions=len(edgeweights_0), options=options, bounds=bounds)
+    #kwargs = {"G": G, "gjconduct" : gj_conduct, "gjfreq": gj_freq}
+    #cost, pos = optimizer.optimize(calc_conduct_optim, 1000, **kwargs)
+    
+    
+    # -- final -- #
     final_weights = op.fmin(calc_conduct_optim, edgeweights_0, args = (G, gj_conduct, gj_freq),ftol=1e-15,xtol=1e-15,maxiter=1e10)
 
     
@@ -146,11 +160,12 @@ def run_networkbuild(itter):
         G2.nodes[i]['pos'] = str(G2.nodes[i]['pos'])
         G2.nodes[i]['Conduct'] = str(G2.nodes[i]['Conduct'])
     
-    if err < 0.16:
-        nx.write_gml(G2, str(itter) + '_' + str(round(err,2))+'.gml')
+    if err < 0.50:
+        nx.write_gml(G2, 'size' + str(round(len(G.nodes))) + str(itter) + '_' + str(round(err,2))+'.gml')
 
 if __name__ == "__main__":
     for i in range(1,150):
-        run_networkbuild(i)
+        for j in range(100, 500000): 
+            run_networkbuild(i, j*10)
 
 # %%
