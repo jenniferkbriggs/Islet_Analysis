@@ -11,7 +11,7 @@ import pickle
 import pandas as pd
 import numpy as np
 
-def LoadData(path = 0):
+def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE):
     # if path is not passed in
     if path == 0:
         path = easygui.fileopenbox('Select Time signal file')
@@ -33,19 +33,33 @@ def LoadData(path = 0):
         loc = np.empty([2,numcell])
         dat = dict()
         i = 0
-        for y in range(td.min_y, td.max_y+1):
-            for x in range(td.min_x, td.max_x+1):
-                electrode = td.getElectrode(x,y)
-                #dat[:,i] = list(electrode.values)
-                dat.update({str(x) + ',' + str(y): list(electrode.values)})
-                loc[:,i] = [x,y]
-                i = i+1
-                
+
+        if USE_CONFIGURED_ISLETS:
+            islet_configuration = read_islet_configuration(TEST_FILE)
+            for islet in islet_configuration:
+                for e in islet:
+                    electrode = td.getElectrode(e[0],e[1])
+                    #dat[:,i] = list(electrode.values)
+                    dat.update({str(x) + ',' + str(y): list(electrode.values)})
+                    loc[:,i] = [x,y]
+                    i = i+1        
+        else:
+            for y in range(td.min_y, td.max_y+1):
+                for x in range(td.min_x, td.max_x+1):
+                    electrode = td.getElectrode(x,y)
+                    #dat[:,i] = list(electrode.values)
+                    dat.update({str(x) + ',' + str(y): list(electrode.values)})
+                    loc[:,i] = [x,y]
+                    i = i+1
+        
+
         fs = td.tickrate 
 
         timeall = np.arange(0,int(time/fs),1/fs)
         ca = pd.DataFrame(dat)
         ca['Time'] = timeall
+
+
     print('Loaded Data Correctly')
     return ca 
 # %%
