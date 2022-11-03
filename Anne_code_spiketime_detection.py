@@ -24,7 +24,6 @@ from operator import itemgetter
 #endregion
 
 plt.style.use('ggplot')
-
 #region Classes
 
 

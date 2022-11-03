@@ -8,16 +8,17 @@ fig_on = True
 
 # if you want to predefine a savepath. If not, comment out this line by putting at # in front!
 global savepath
-savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
-path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
+#savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
+#path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
 
-#savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
-#path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
+savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
+path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
 
 # How do you want to define the threshold? (Either number_of_connections or scalefreeish)
 threshold_opts = 'number_of_connections'
 k = 6
-
+USE_CONFIGURED_ISLETS = 'true'
+TEST_FILE = ''
 #threshold_opts = 'scalefreeish'
 min_connect = 5
 max_connect = 20
@@ -42,7 +43,7 @@ from LoadData import *
 
 # %%  Load timeseries file
 if 'path' in locals():
-    ca = LoadData(path)
+    ca = LoadData(path, USE_CONFIGURED_ISLETS, TEST_FILE)
 else:
     ca = LoadData()
 
@@ -81,35 +82,27 @@ if fig_on:
 cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_mat.values != np.flipud(cor_mat).diagonal(0),0,inplace=True))
 
 # %% Computing the network -- need to code in how to find the threshold (8 or power law)
-
 # NOT WORKING
 #If how to set threshold is not predefined, choose how to set through gui 
 # if 'threshold_opts' not in locals():
 #     root = tk.Tk()
-
 #     # click event handler
 #     def b_degree():
 #         threshold_opts = 'number_of_connections'
 #         min_connect = 5
 #         max_connect = 20
-
 #         print('done')
 #         root.destroy()
 #         return threshold_opts
-    
 #     def b_scalefree():
 #         threshold_opts = 'scalefreeish'
 #         print('done')
 #         root.destroy()
 #         return threshold_opts
-
-
 #     top = ttk.Frame(root)
 #     bottom = ttk.Frame(root)
-
 #     top.pack(side=tk.TOP)
 #     bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
 #     # create the widgets for the top part of the GUI,
 #     # and lay them out
 #     b = ttk.Button(root, text="Predefined average degre", command=b_degree)
