@@ -49,7 +49,9 @@ function CellTC = STDanalysis(images, CellMask,opts)
        %end
        if cctt < 8  
 
-        figure, title(['Itteration' num2str(cctt)]), plot(rr,cc,'o'), saveas(gcf, ['Itteration' num2str(cctt) '.png']) 
+        figure, title(['Itteration' num2str(cctt)]),
+        plot(rr,cc,'o'), 
+        %saveas(gcf, ['Itteration' num2str(cctt), '.png']) 
         for bb= 1:length(badpix)
         hold on, plot(rr(badpix(bb)),cc(badpix(bb)),'ro','markerfacecolor','r')
         CellMask(rr(badpix(bb)),cc(badpix(bb))) = 0;
@@ -76,7 +78,7 @@ function CellTC = STDanalysis(images, CellMask,opts)
            clear TCcheck
         end
         end
-
+close all 
 
         CellTC(:,i) = TC; %Updates CellTC array with mean intensities from each frame of each cell
         PlotLabels{i} = ['Cell' num2str(i)]; %Updates labels with current cell number for legend

@@ -6,19 +6,21 @@ close all
 clear all
 clc
 
+addpath('/Users/levittcl/Documents/GitHub/UniversalCode');
+addpath ('/Users/levittcl/Documents/GitHub/UniCode')
 
 cachannel = 1;
 nuchannel = 2;
 howmanychannel = 1;
 
-filename = '/Users/levittcl/Documents/Research/DATA/gCAMP - Calcium Imaging/2022_06_16/gCAMP_islet1_control_2mM_11mM_KCl.czi' %file name can direct to '.mat' analysis file or imaging file
-savepath = '/Users/levittcl/Documents/Hub Analysis/'
-savename = '/hubanalysistest.mat'
+filename = '/Users/levittcl/Documents/Research/DATA/gCAMP - Calcium Imaging/2021_11_20/control/2mM_11mM_KCl_gCAMP_control.czi' %file name can direct to '.mat' analysis file or imaging file
+savepath = '/Users/levittcl/Documents/HUB_ANALYSIS2/'
+savename = '/Hub_Analysis_1014_tryall.mat'
 
 
 
 numad = 1;
-starttime = -1
+starttime = 758
 endtime = -1
 gstart = 1
 
@@ -141,11 +143,11 @@ numcells = 1;
 % 
 try %try to load in cell masks if already in loadpath
     try
-    load([loadpath '\Masksv2.mat'])
+    load([loadpath '/Masksv2.mat'])
     catch
-    load([loadpath '\Masks.mat'])
+    load([loadpath '/Masks.mat'])
     end
-    load([loadpath '\CellNumber.mat'])
+    load([loadpath '/CellNumber.mat'])
     
     ImAv = sum(images.*logical(CellMask),3); %compresses all frames into single array of intensities
     HSV = ones(sx,sy,3); %preallocates a 3 dimensional array
@@ -177,8 +179,8 @@ catch
             k = 0;
         end
     end
-    save([savepath '\Masks.mat'],'CellMask')
-    save([savepath '\CellNumber.mat'],'numcells')
+    save([savepath '/Masks.mat'],'CellMask')
+    save([savepath '/CellNumber.mat'],'numcells')
     close(NoSigFig);
     clear NoSigFig;  
 
@@ -194,12 +196,12 @@ catch
     %clear images MaskedIMGstack;
     try
     saveas(TCFig,[savepath '/Cellintestiy.tif']); %Saves figure of each cell's timecourse
-    save([savepath savename '/CaWaveForm.mat'],'CellTC')
+    save([savepath '/CaWaveForm.mat'],'CellTC'); % same cawaveform - Cell TC
     catch
         mkdir(savepath)
         saveas(TCFig,[savepath savename '/Cellintestiy.tif']); %Saves figure of each cell's timecourse
     end
-    save([savepath savename '/CaWaveForm.mat'],'CellTC')
+    save([savepath '/CaWaveForm'],'CellTC')
    
 end
 

@@ -5,26 +5,26 @@ clc
 addpath('~/GitHub/UniversalCode');
 
 % THINGS YOU CHANGE
-filepath = %input directory where CaWaveForm.mat is 
-imagepath = %input directory where Imaging.mat is
-savename = %input where to save the data
-Thr = .9   %input correaltion threshold for network analysis
-TitleChoice = 'input title choice here' %Input title choice here
+filepath = '/Users/levittcl/Documents/HUB_ANALYSIS2' %input directory where CaWaveForm.mat is 
+imagepath = '/Users/levittcl/Documents/HUB_ANALYSIS2'%input directory where Imaging.mat is
+savename = '/Users/levittcl/Documents/HUB_ANALYSIS2'%input where to save the data
+Thr = .8   %input correaltion threshold for network analysis
+TitleChoice = 'HubAnalysis10_14_new' %Input title choice here
 %Input start and end time of video
-starttime = Vidinfo(illy).starttime(lg); 
-endtime = Vidinfo(illy).endtime(lg);
+% starttime = Vidinfo(illy).starttime(lg); 
+% endtime = Vidinfo(illy).endtime(lg);
 
 % Load things: 
-load([filepath '\CaWaveForm.mat'])
-load([imagepath '\' 'Imaging.mat'])
-load([filepath '\' 'Masks.mat'])       %load masks
-load([imagepath '\' 'CellNumber.mat'])
+load([filepath '/' 'CaWaveForm2.mat'])
+load([imagepath '/' 'Hub_Analysis_1014_tryall.mat'])
+load([filepath '/' 'Masks.mat'])       %load masks
+load([imagepath '/' 'CellNumber.mat'])
 
 % 
-zstacks = 3         %how many z stacks
-zz = 2              %where to start on z stack
-cachannel = 3       %where is the calcium channel
-howmanychannel = 3  %how many imaging channels
+zstacks = 1         %how many z stacks
+zz = 1              %where to start on z stack
+cachannel = 1       %where is the calcium channel
+howmanychannel = 1  %how many imaging channels
 
 
 % Load video
@@ -77,7 +77,7 @@ for i=1:size(images,3)
     images(:,:,i)=medfilt2(images(:,:,i),[5 5]); %applies filter to clean up images
 end
 toc
-end
+
 ImAv = sum(images,3); %compresses all frames into single array of intensities
 HSV = ones(sx,sy,3); %preallocates a 3 dimensional array
 ImAvn = ImAv/max(ImAv(:));
