@@ -10,8 +10,9 @@ import easygui
 import pickle
 import pandas as pd
 import numpy as np
+import h5py
 
-def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE):
+def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
     # if path is not passed in
     if path == 0:
         path = easygui.fileopenbox('Select Time signal file')
@@ -52,10 +53,49 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE):
                     loc[:,i] = [x,y]
                     i = i+1
         
+    elif path[-3:int(len(path))] == '.h5':
+        with h5py.File(path, "r") as f: #this code is very specific for Anne Gresch's electrode data. Will need updated for another file
+            # Print all root level object names (aka keys) 
+            # these can be group or dataset names 
+            print("Keys: %s" % f.keys())
+            # get first object name/key; may or may NOT be a group
+            a_group_key = list(f.keys())[0]
 
-        fs = td.tickrate 
+            # If a_group_key is a group name, 
+            # this gets the object names in the group and returns as a list
+            nextname = list(f[a_group_key])
+            # preferred methods to get dataset values:
+            nextname2 = list(f[a_group_key][nextname[0]])
+            data = f[a_group_key][nextname[0]][nextname2[0]].value
+            metadata = f[a_group_key][nextname[0]][nextname2[1]].value
 
-        timeall = np.arange(0,int(time/fs),1/fs)
+
+        min_y = metadata['Region.Top'][0]
+        min_x = metadata['Region.Left'][0]
+        max_y = metadata['Region.Bottom'][0]
+        max_x = metadata['Region.Right'][0]
+
+        numcell = (max_x - min_x+1)*(max_y - min_y+1)
+
+        print('Reshaping Values')
+        loc = np.empty([2,numcell])
+        dat = dict()
+        i = 0
+
+        for x in range(data.shape[1]):
+            for y in range(data.shape[2]):
+
+                #dat[:,i] = list(electrode.values)
+                dat.update({str(min_x+x) + ',' + str(min_y+y): list(data[:,x,y])})
+                loc[:,i] = [x+min_x,y+min_y]
+                i = i+1
+
+
+
+        #fs = td.tickrate 
+
+        #timeall = np.arange(0,int(time/fs),1/fs)
+        timeall = np.arange(0, int(np.shape(data)[0]),1)
         ca = pd.DataFrame(dat)
         ca['Time'] = timeall
 

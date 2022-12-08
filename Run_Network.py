@@ -12,7 +12,7 @@ global savepath
 #path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
 
 savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
-path = '/Users/jkbriggs/Dropbox/CMOS data/210720_3985_G10.cmcr'
+path = '/Volumes/Briggs_10TB/AnneGresch/220110_4816_G10_I1.h5'
 
 # How do you want to define the threshold? (Either number_of_connections or scalefreeish)
 threshold_opts = 'number_of_connections'
@@ -32,12 +32,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 import scipy.optimize as op
-import easygui #for selecting files using gui
-import pandas as pd
+#import easygui #for selecting files using gui
+import pandas as np
 import math
 import tkinter as tk
-from tkinter import ttk
-from tkinter.messagebox import askyesno
+#from tkinter import ttk
+#from tkinter.messagebox import askyesno
 from Extract_Functional_Net import *
 from LoadData import *
 
