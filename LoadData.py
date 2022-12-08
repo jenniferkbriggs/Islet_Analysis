@@ -77,7 +77,6 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
 
         numcell = (max_x - min_x+1)*(max_y - min_y+1)
 
-        print('Reshaping Values')
         loc = np.empty([2,numcell])
         dat = dict()
         i = 0
