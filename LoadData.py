@@ -97,7 +97,8 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
         timeall = np.arange(0, int(np.shape(data)[0]),1)
         ca = pd.DataFrame(dat)
         ca['Time'] = timeall
-
+    else:
+        raise Exception('File type not yet valid for this analysis')
 
     print('Loaded Data Correctly')
     return ca 
