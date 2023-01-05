@@ -90,15 +90,15 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
                 i = i+1
 
 
+    else:
+        raise Exception('File type not yet valid for this analysis')
 
         #fs = td.tickrate 
 
         #timeall = np.arange(0,int(time/fs),1/fs)
-        timeall = np.arange(0, int(np.shape(data)[0]),1)
-        ca = pd.DataFrame(dat)
-        ca['Time'] = timeall
-    else:
-        raise Exception('File type not yet valid for this analysis')
+    timeall = np.arange(0, int(np.shape(data)[0]),1)
+    ca = pd.DataFrame(dat)
+    ca['Time'] = timeall
 
     print('Loaded Data Correctly')
     return ca 
