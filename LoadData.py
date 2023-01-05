@@ -35,23 +35,23 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
         dat = dict()
         i = 0
 
-        if USE_CONFIGURED_ISLETS:
-            islet_configuration = read_islet_configuration(TEST_FILE)
-            for islet in islet_configuration:
-                for e in islet:
-                    electrode = td.getElectrode(e[0],e[1])
+        # if USE_CONFIGURED_ISLETS:
+        #     islet_configuration = read_islet_configuration(TEST_FILE)
+        #     for islet in islet_configuration:
+        #         for e in islet:
+        #             electrode = td.getElectrode(e[0],e[1])
+        #             #dat[:,i] = list(electrode.values)
+        #             dat.update({str(x) + ',' + str(y): list(electrode.values)})
+        #             loc[:,i] = [x,y]
+        #             i = i+1        
+        # else:
+        for y in range(td.min_y, td.max_y+1):
+            for x in range(td.min_x, td.max_x+1):
+                electrode = td.getElectrode(x,y)
                     #dat[:,i] = list(electrode.values)
-                    dat.update({str(x) + ',' + str(y): list(electrode.values)})
-                    loc[:,i] = [x,y]
-                    i = i+1        
-        else:
-            for y in range(td.min_y, td.max_y+1):
-                for x in range(td.min_x, td.max_x+1):
-                    electrode = td.getElectrode(x,y)
-                    #dat[:,i] = list(electrode.values)
-                    dat.update({str(x) + ',' + str(y): list(electrode.values)})
-                    loc[:,i] = [x,y]
-                    i = i+1
+                dat.update({str(x) + ',' + str(y): list(electrode.values)})
+                loc[:,i] = [x,y]
+                i = i+1
         
     elif path[-3:int(len(path))] == '.h5':
         with h5py.File(path, "r") as f: #this code is very specific for Anne Gresch's electrode data. Will need updated for another file
