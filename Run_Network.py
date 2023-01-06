@@ -11,17 +11,26 @@ global savepath
 #savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
 #path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
 
-savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
-path = '/Volumes/Briggs_10TB/AnneGresch/220110_4816_G10_I1.h5'
+savepath = '~/Desktop'
+path = '~/Desktop/221024_4816_K_G8_1_I1.h5'
 
-# How do you want to define the threshold? (Either number_of_connections or scalefreeish)
-threshold_opts = 'number_of_connections'
+# How do you want to define the threshold? (Either number_of_connections, scalefreeish, setthreshold)
+threshold_opts = 'setthreshold'
+
+#for threshold_opts = 'setthreshold'
+threshold_set = 0.5 #change if you choose to set the threshold manually
+
+#for threshold_opts = 'number_of_connections'
 k = 6
-USE_CONFIGURED_ISLETS = 'true'
-TEST_FILE = ''
+
 #threshold_opts = 'scalefreeish'
-min_connect = 5
+min_connect = 5 #minimum average connections for the scale free threshold
 max_connect = 20
+
+
+USE_CONFIGURED_ISLETS = 'FALSE'
+TEST_FILE = ''
+
 
 
 # %% Import packages
@@ -118,7 +127,7 @@ cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_m
 if threshold_opts == 'number_of_connections':
     # Speficy average number of connections:
     thr = thr_based_on_degree(cor_mat, k)
-elif 'scalefreeish':
+elif threshold_opts == 'scalefreeish':
     maxbnds = float(thr_based_on_degree(cor_mat, min_connect)) #because the minimum connection gives the largest threshold
     minbnds = float(thr_based_on_degree(cor_mat, max_connect))
     bnds = (minbnds, maxbnds)
@@ -127,6 +136,8 @@ elif 'scalefreeish':
     final_symp = op.minimize(makegraph_err,x0, args=(cor_mat), method = 'Nelder-Mead', bounds = ((minbnds, maxbnds),))
     #find treshold
     thr = final_symp.x[0]
+elif threshold_opts == 'setthreshold':
+    thr = threshold_set
 
 G = makegraph(thr, cor_mat)
 
@@ -165,7 +176,8 @@ net_stats = {'Average_Correlation': np.mean(list(cor_mat.values)),
 'Global_Efficiency': nx.global_efficiency(G),
 'Local_efficiency': nx.local_efficiency(G),
 'Hubs': list(hubs.keys()),
-'Most_Central': list(centralhubs.keys())
+'Most_Central': list(centralhubs.keys()),
+'Threshold': thr
 }
 
 with open(savepath + 'Net_stats.csv', 'w') as f:  
