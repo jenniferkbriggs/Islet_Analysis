@@ -11,21 +11,21 @@ global savepath
 #savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
 #path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
 
-savepath = '~/Desktop'
-path = '~/Desktop/221024_4816_K_G8_1_I1.h5'
+savepath = 'E:/Promotion_Postdoc/CMOS/CMOS_Daten/210705_Aktivitaet/HDF5_3985'
+path = 'E:/Promotion_Postdoc/CMOS/CMOS_Daten/210705_Aktivitaet/HDF5_3985/210705_3985_G8_I1.h5'
 
 # How do you want to define the threshold? (Either number_of_connections, scalefreeish, setthreshold)
-threshold_opts = 'setthreshold'
+threshold_opts = 'number_of_connections'
 
 #for threshold_opts = 'setthreshold'
-threshold_set = 0.5 #change if you choose to set the threshold manually
+threshold_set = 0.7 #change if you choose to set the threshold manually
 
 #for threshold_opts = 'number_of_connections'
 k = 6
 
 #threshold_opts = 'scalefreeish'
-min_connect = 5 #minimum average connections for the scale free threshold
-max_connect = 20
+min_connect = 3 #minimum average connections for the scale free threshold
+max_connect = 12
 
 
 USE_CONFIGURED_ISLETS = 'FALSE'
@@ -66,6 +66,7 @@ except:
 
 # %% Compute the correlation matrix
 cor_mat = ca.corr() #computes correlation matrix
+
 if fig_on:
     f = plt.figure(figsize=(19, 15))
     plt.matshow(cor_mat, fignum=f.number)
@@ -86,6 +87,9 @@ if fig_on:
 
 
     plt.clf
+
+cor_active = [np.mean(cor)>0.1 for cor in cor_mat.values]
+cor_mat = cor_mat.iloc[cor_active, cor_active]
 
 # set diagonals equal to zero:
 cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_mat.values != np.flipud(cor_mat).diagonal(0),0,inplace=True))
@@ -125,7 +129,7 @@ cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_m
 
 # %%
 if threshold_opts == 'number_of_connections':
-    # Speficy average number of connections:
+    # Specify average number of connections:
     thr = thr_based_on_degree(cor_mat, k)
 elif threshold_opts == 'scalefreeish':
     maxbnds = float(thr_based_on_degree(cor_mat, min_connect)) #because the minimum connection gives the largest threshold
@@ -168,6 +172,8 @@ hubs = {k:v for (k,v) in deg.items() if v >= sixtypercentdegree}
 deg = (nx.degree_centrality(G))
 sixtypercentdegree = (max(list(deg.values()))*0.6) 
 centralhubs = {k:v for (k,v) in deg.items() if v >= sixtypercentdegree}
+
+
 
 
 net_stats = {'Average_Correlation': np.mean(list(cor_mat.values)),
