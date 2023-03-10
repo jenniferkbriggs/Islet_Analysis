@@ -11,17 +11,26 @@ global savepath
 #savepath = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow_'
 #path = '/Users/briggjen/Documents/GitHub/Islet_Analysis/Examples/SignalProcessing/Slow.csv'
 
-savepath = '/Users/jkbriggs/Dropbox/CMOS data/Slow'
-path = '/Volumes/Briggs_10TB/AnneGresch/220110_4816_G10_I1.h5'
+savepath = 'E:/Promotion_Postdoc/CMOS/CMOS_Daten/210705_Aktivitaet/HDF5_3985'
+path = 'E:/Promotion_Postdoc/CMOS/CMOS_Daten/210705_Aktivitaet/HDF5_3985/210705_3985_G8_I1.h5'
 
-# How do you want to define the threshold? (Either number_of_connections or scalefreeish)
+# How do you want to define the threshold? (Either number_of_connections, scalefreeish, setthreshold)
 threshold_opts = 'number_of_connections'
+
+#for threshold_opts = 'setthreshold'
+threshold_set = 0.7 #change if you choose to set the threshold manually
+
+#for threshold_opts = 'number_of_connections'
 k = 6
-USE_CONFIGURED_ISLETS = 'true'
-TEST_FILE = ''
+
 #threshold_opts = 'scalefreeish'
-min_connect = 5
-max_connect = 20
+min_connect = 3 #minimum average connections for the scale free threshold
+max_connect = 12
+
+
+USE_CONFIGURED_ISLETS = 'FALSE'
+TEST_FILE = ''
+
 
 
 # %% Import packages
@@ -57,6 +66,7 @@ except:
 
 # %% Compute the correlation matrix
 cor_mat = ca.corr() #computes correlation matrix
+
 if fig_on:
     f = plt.figure(figsize=(19, 15))
     plt.matshow(cor_mat, fignum=f.number)
@@ -77,6 +87,9 @@ if fig_on:
 
 
     plt.clf
+
+cor_active = [np.mean(cor)>0.1 for cor in cor_mat.values]
+cor_mat = cor_mat.iloc[cor_active, cor_active]
 
 # set diagonals equal to zero:
 cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_mat.values != np.flipud(cor_mat).diagonal(0),0,inplace=True))
@@ -116,9 +129,9 @@ cor_mat = cor_mat.where(cor_mat.values != np.diag(cor_mat),0,cor_mat.where(cor_m
 
 # %%
 if threshold_opts == 'number_of_connections':
-    # Speficy average number of connections:
+    # Specify average number of connections:
     thr = thr_based_on_degree(cor_mat, k)
-elif 'scalefreeish':
+elif threshold_opts == 'scalefreeish':
     maxbnds = float(thr_based_on_degree(cor_mat, min_connect)) #because the minimum connection gives the largest threshold
     minbnds = float(thr_based_on_degree(cor_mat, max_connect))
     bnds = (minbnds, maxbnds)
@@ -127,6 +140,8 @@ elif 'scalefreeish':
     final_symp = op.minimize(makegraph_err,x0, args=(cor_mat), method = 'Nelder-Mead', bounds = ((minbnds, maxbnds),))
     #find treshold
     thr = final_symp.x[0]
+elif threshold_opts == 'setthreshold':
+    thr = threshold_set
 
 G = makegraph(thr, cor_mat)
 
@@ -159,13 +174,16 @@ sixtypercentdegree = (max(list(deg.values()))*0.6)
 centralhubs = {k:v for (k,v) in deg.items() if v >= sixtypercentdegree}
 
 
+
+
 net_stats = {'Average_Correlation': np.mean(list(cor_mat.values)),
 'Degree': 2*G.number_of_edges()/G.number_of_nodes(), 
 'Clustering': nx.average_clustering(G), 
 'Global_Efficiency': nx.global_efficiency(G),
 'Local_efficiency': nx.local_efficiency(G),
 'Hubs': list(hubs.keys()),
-'Most_Central': list(centralhubs.keys())
+'Most_Central': list(centralhubs.keys()),
+'Threshold': thr
 }
 
 with open(savepath + 'Net_stats.csv', 'w') as f:  

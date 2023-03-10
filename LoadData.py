@@ -66,8 +66,8 @@ def LoadData(path = 0, USE_CONFIGURED_ISLETS = 'False', TEST_FILE = ''):
             nextname = list(f[a_group_key])
             # preferred methods to get dataset values:
             nextname2 = list(f[a_group_key][nextname[0]])
-            data = f[a_group_key][nextname[0]][nextname2[0]].value
-            metadata = f[a_group_key][nextname[0]][nextname2[1]].value
+            data = f[a_group_key][nextname[0]][nextname2[0]][()]
+            metadata = f[a_group_key][nextname[0]][nextname2[1]][()]
 
 
         min_y = metadata['Region.Top'][0]
