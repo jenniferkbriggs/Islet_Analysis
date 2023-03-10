@@ -2,3 +2,5 @@
 *.mat
 *.fig
 *.csv
+*.gml
+*.xml

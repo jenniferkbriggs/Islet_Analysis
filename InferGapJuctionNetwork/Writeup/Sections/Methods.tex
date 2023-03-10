@@ -1,0 +1,72 @@
+\documentclass[10pt]{report}
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+\usepackage{cases}
+
+\newcommand{\bb}{$\beta$-cell }
+\newcommand{\bs}{$\beta$-cells }
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\today}
+\lhead{Islet Gap Junction Scaling\\ Jennifer Briggs, YuanZhao Zhang, Richard Benninger,}
+\rfoot{Page \thepage}
+
+
+\begin{document}
+The Pancreatic Islet is an organoid located in the pancreas responsible for secretion of insulin, glucagon, and somatostatin, the hormones central to glucose homeostasis and central in the development of diabetes.  The islet is made up of many oscillatory \bs which electrically communicate via gap junctions in order to synchronize their oscillations.  All (?) animals have pancreatic islets.  Typically, organs scale in size in a manner roughly proportional to the size of the animal [cite - Kleiblers law? Some scaling]. However, the size of islets does not scale proportionally with animal size. That is, the number of \bs in the islet and the size of a \bb in the islet is relatively invariant to animal size.  \textbf{We hypothesize this phenomenon is because the islet size is bounded by it's ability to synchronize.} To probe this hypothesis, we develop \bb networks of many sizes based off of experimental data and use analytic techniques to understand their synchronization 
+
+
+\section{Building the networks}
+To build the beta cell network, we must make some assumptions based on the data we have available. Unfortunately, there is no data with the exact number of gap junctions between beta cells or the conductance of individual gap junctions. Rather, we have information about islet behavior during electrophysiological experiments that give us the distributions of gap junctions in the islet, number of beta cells in the islet, and gap junction connectivity between beta cells. 
+
+Using this information, we will explore many possible gap junction network configurations that can replicate this data using computational optimization. Because this optimization problem has many free parameters, this is not a convex optimization problem and there are likely many solutions. We interpret each solution as a hypothesis of a possible islet configuration.  Additionally, we explore multiple gap junction network configurations that match the experimental distribution to see whether how the synchronization of the islet is influenced by the gap junction network.
+
+\subsection{Building the beta cell network}
+We first build the structural (gap junction) \bb network by randomly selecting a  \bb diameter between $10.0-11.0 \mu m$. We then randomly define the percent of \b in the islet from $P = 60\%-90\%$ (as this percentage does change across species). The observed size of Islets range from $700\mu m^2$-$125,600\mu m^2$ cite[Huang, Harrington, Bittel The Flaws and Future...]. Finally,  we create islets with an area between $400-1,000,000 \mu m^2$. We hypothesize that synthetic islet networks within the observed range will show a difference in synchronization ability (particularly above the upper limit).  
+
+
+To build the network, we assume the islet is a sphere. We define a 3D grid with points $(x,y,z) \in (-radius, radius)$ and then remove any points $\sqrt{x^2+y^2+z^2} > radius$.  Finally, to mimic the fact that not all cells in the islet are \bs, we randomly remove $1-P$ cells from the islet\footnote{This assumes the structure of \b to non-\b is random which may not be the case for some organisms, such as humans [citation]}. 
+
+Next, we must connect each cell with it's neighbors following experimental distributions. There are approximately $217 \pm 46$ gap junctions (GJ) in a 2D plane of the mouse islet with $~35$ \bs. If we assume this follows a normal distribution such that $GJ_{islet} \sim \mathcal{N}(217, 48)$, we can assume the average number of GJ per cell: $GJ_{cell} \sim \mathcal{N}(6.38, 1.35)$. In the simulated islet network, we create a vector of cell `degrees' drawn from this distribution. We then iterate through each cell, assign that cell to a randomly chosen degree, and connect that cell to any cells within a mean squared distance of 6 $\mu m$ until that cell has the degree randomly assignment to it\footnote{Add algorithm? Because this algorithm has a bias toward a smaller average mean degree, we actually choose from a normal distribution $GJ_{cell} \sim \mathcal{N}(6.38+0.6, 1.35)$, which. results in a network whose mean degree follows $GJ_{cell} \sim \mathcal{N}(6.38, 1.35)$.}. 
+
+
+\subsection{Learning Gap Junction Conductance}
+\begin{minipage}{0.65\textwidth}
+Now that the network has been developed, we must weight each edge according to it's gap junction conductance.  It is impractical (?) logistically to measure the conductance of every gap junction in the islet. However, [cite Zhang 2008] showed that the average conductance for a cell is 1.22 $ns$ and [cite Farnsworth 2013] used Florescence Recovery Rate after Photobleaching, a proxy for gap junction conductance of the entire cell, to derive a distribution of the recovery rate of many cells in the islet (Figure \ref{GJdist}).  To convert the units in Farnsworth et al.  to Zhang 2008, we scale: $GJ_{conductance} = GJ_{Recovery Rate}*203$, such that the mean of each paper equals each other $1.2ns = 0.06 s^{-1}*208$.  To learn the conductance of each gap junction,  we try to replicate this distribution.  The loss function is:
+\begin{equation}
+\frac{\hat{Y} - Y}{\sigma_Y}
+\end{equation}
+where $Y$ is the frequency value of the histogram, $\hat{Y}$ is the estimated frequency at that conductance value. $\sigma_Y$ is calculated by assuming the least occurring recovery rate (0.002 $s^{-1}$) corresponded to one cell ($n=1$).   By a poisson distribution, we calculate the $\sigma_Y$ as the $sqrt(n)$. 
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+\includegraphics[width=\textwidth]{../Figures/Farnsworth.png}
+
+\vspace{3 em}
+
+\begin{tabular}{l | l l}
+\textbf{Recovery Rate} & \textbf{$Y$} & \textbf{$\sigma_Y$}\\
+\hline
+0.002	& 0.00877193	& 0.000821567 \\
+0.003 &	0.055921053&	0.002074354\\
+0.004 &	0.195175439&	0.003875322\\
+0.005 & 0.216008772	&0.004076907\\
+0.006 &	0.153508772	&0.003436859\\
+0.008 &	0.095394737	&0.002709302\\
+0.009 &	0.14254386	&0.003311841\\
+0.01	 & 0.040570175	&0.001766846\\
+0.011 &	0.037280702	&0.001693703\\
+0.012 &	0.009868421	&0.000871403\\
+0.013 &	0.051535088	&0.001991346\\
+
+\end{tabular}
+\end{minipage}
+
+
+\end{document}

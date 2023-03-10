@@ -12,6 +12,8 @@ The matlab file: *Extracting_individual_cells.m* is a script used to load calciu
 ## Network Analysis in Matlab
 After you run *Extracting_individual_cells.m*, you will have a .mat file with all CaWaveForm.mat. To run general network analysis, you will open *RunNetworkAnalysis.m* and add the file location to this .mat file under capath
 
+If you want to determine the optimal threshold for getting a log-log plot, input calcium into *findoptRth*. Please note, if you want to have the threshold based on number of links, please email me and I will add this to the code!
+
 ## Network analysis in Python
 ### General Network Analysis: **Run_Network.py**.
 The first section (lines 5-17) is title options for you to change. This is wheter you define whether you would like figures, where to save the file to. ]
