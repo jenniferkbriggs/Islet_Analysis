@@ -1,4 +1,4 @@
-function [N, Adj, kpercent, histArrayPercShort,pval,Rij,s] = links(calciumT, Threshold, Opts,fig)%ii, mm, phase, figs)
+function [N, Adj, kpercent, histArrayPercShort,pval,Rij,s,k, histArrayShort] = links(calciumT, Threshold, Opts,fig)%ii, mm, phase, figs)
 %% Network analysis
 % Jennifer Briggs 12/2020
 % This program was adapted from an original program by Vira Kravets (Apr
@@ -53,13 +53,13 @@ time = [1: size(calciumT,1)];
 
 
 %% 3. Making a link map
-%disp(mean2(Rij))
+disp(mean2(Rij))
 Adj = Rij;
 Adj(Adj >= Threshold) = 1;
 Adj(Adj < Threshold) = 0;
 % 
- Adj = Adj - diag(diag(Adj));             % replacing diagonal elemants with 0s to account for self-correlation
-%disp(mean2(Adj))
+Adj = Adj - diag(diag(Adj));             % replacing diagonal elemants with 0s to account for self-correlation
+adj_mean = (mean2(Adj))
 
 if figs
     figure(fig);
