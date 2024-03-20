@@ -9,18 +9,18 @@ clc
 addpath('/Users/levittcl/Documents/GitHub/UniversalCode');
 addpath ('/Users/levittcl/Documents/GitHub/UniCode')
 
-cachannel = 1;
+cachannel = 2;
 nuchannel = 2;
-howmanychannel = 1;
+howmanychannel = 2;
 
-filename = '/Users/levittcl/Documents/Research/DATA/gCAMP - Calcium Imaging/2021_11_20/control/2mM_11mM_KCl_gCAMP_control.czi' %file name can direct to '.mat' analysis file or imaging file
+filename = '/Volumes/Claire Hard Drive/DATA/FRAP/4 CONDITIONS/4 Conditions  Calcium Imaging/ca imaging islet 3 control good.czi'%file name can direct to '.mat' analysis file or imaging file
 savepath = '/Users/levittcl/Documents/HUB_ANALYSIS2/'
 savename = '/Hub_Analysis_1014_tryall.mat'
 
 
 
 numad = 1;
-starttime = 758
+starttime = 300
 endtime = -1
 gstart = 1
 

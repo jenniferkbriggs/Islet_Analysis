@@ -5,20 +5,20 @@ clc
 addpath('~/GitHub/UniversalCode');
 
 % THINGS YOU CHANGE
-filepath = '/Users/levittcl/Documents/HUB_ANALYSIS2' %input directory where CaWaveForm.mat is 
-imagepath = '/Users/levittcl/Documents/HUB_ANALYSIS2'%input directory where Imaging.mat is
-savename = '/Users/levittcl/Documents/HUB_ANALYSIS2'%input where to save the data
-Thr = .8   %input correaltion threshold for network analysis
-TitleChoice = 'HubAnalysis10_14_new' %Input title choice here
+filepath = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2024_03_17/untreated/islet2' %input directory where CaWaveForm.mat is 
+imagepath = '/Volumes/CHL2021/2024_03_17 GCaMP 4 Conditions/Cytokine_S293/Analyzed'%input directory where Imaging.mat is
+savename = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2024_03_17/untreated/islet2'%input where to save the data
+Thr = .9   %input correaltion threshold for network analysis
+TitleChoice = 'HubAnalysis3_18_24' %Input title choice here
 %Input start and end time of video
 % starttime = Vidinfo(illy).starttime(lg); 
 % endtime = Vidinfo(illy).endtime(lg);
 
 % Load things: 
-load([filepath '/' 'CaWaveForm2.mat'])
-load([imagepath '/' 'Hub_Analysis_1014_tryall.mat'])
-load([filepath '/' 'Masks.mat'])       %load masks
-load([imagepath '/' 'CellNumber.mat'])
+load([filepath '/' 'CaWaveForm.mat'])
+R = bfopen([imagepath '/' 'untreated_islet2_11mM.czi'])
+load([filepath '/' 'untr_islet2_11mM_Masks.mat'])       %load masks
+load([filepath '/' 'untr_islet2_11mM_CellNumber.mat'])
 
 % 
 zstacks = 1         %how many z stacks
@@ -50,25 +50,25 @@ end
 T = double(T);
 T = T(cachannel:howmanychannel:end);
 T = T(1:zstacks:end);
+% 
+% if starttime == -1
+%     st=1;
+% else
+%     st = starttime;
+% end
+% 
+% if endtime == -1
+%     ed=length(T);
+% else
+%     ed=endtime;
+% end
 
-if starttime == -1
-    st=1;
-else
-    st = starttime;
-end
-
-if endtime == -1
-    ed=length(T);
-else
-    ed=endtime;
-end
-
-T = T(st:ed);
+T = T(1:end);
 images=double(IMG); % converts images to double precision
 images = images(:,:,cachannel:howmanychannel:end);
 RawImg=images(:,:,1); % assigns the first frame of the video to RawImg variable
 images = images(:,:,zz:zstacks:end);
-images = images(:,:,st:ed-1);
+images = images(:,:,1:end-1);
 
 sx=size(images,1);
 sy=size(images,2);
@@ -76,7 +76,6 @@ sz=length(T);
 for i=1:size(images,3)
     images(:,:,i)=medfilt2(images(:,:,i),[5 5]); %applies filter to clean up images
 end
-toc
 
 ImAv = sum(images,3); %compresses all frames into single array of intensities
 HSV = ones(sx,sy,3); %preallocates a 3 dimensional array
@@ -124,7 +123,7 @@ catch
 end
 
 fig2 = figure
-p = plot(AdjacencyGraph, 'Xdata',y,'YData',x, 'EdgeColor', 'b', 'NodeColor',Nodec,'MarkerSize',8, 'LineWidth',1 )
+p = plot(AdjacencyGraph, 'Xdata',y,'YData',x, 'EdgeColor', 'w', 'NodeColor',Nodec,'MarkerSize',15, 'LineWidth',3)
 p.NodeLabel = [];
 set(gca, 'YDir','reverse')
 title([TitleChoice])
@@ -142,8 +141,5 @@ set(fig2, 'Position', [100 100 1000 800])
 saveas(fig, [savename '.png'])
 saveas(fig2, [savename '.png'])
 
-clearvars x y
-close(fig)
-close(fig2)
 
 

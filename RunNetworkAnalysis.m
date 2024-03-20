@@ -4,7 +4,7 @@ close all
 clear all
 
 %load cvs: 
-capath = '/Users/levittcl/Documents/HUB_ANALYSIS2/CaWaveForm.mat' %%%% Add .mat path here
+capath = '/Users/levittcl/Documents/Research/Projects/SST/Calcium Delta Cells/3_12_2023/islet 4 5mM 11mM/CaWaveForm.mat' %%%% Add .mat path here
 ca = importdata(capath);
 
 %To set the threshold, either manually set: 
