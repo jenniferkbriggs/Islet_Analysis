@@ -5,20 +5,20 @@ clc
 addpath('~/GitHub/UniversalCode');
 
 % THINGS YOU CHANGE
-filepath = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2024_03_17/untreated/islet2' %input directory where CaWaveForm.mat is 
-imagepath = '/Volumes/CHL2021/2024_03_17 GCaMP 4 Conditions/Cytokine_S293/Analyzed'%input directory where Imaging.mat is
-savename = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2024_03_17/untreated/islet2'%input where to save the data
+filepath = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2022_12_06/Cytokine/stim 1' %input directory where CaWaveForm.mat is 
+imagepath = '/Volumes/CHL2021/All Microscope Data/2022_12_06 GCaMP'%input directory where Imaging.mat is
+savename = '/Users/levittcl/Documents/1_Research/1_Research Projects/1_Heterogeneity and GJs/2_Calcium Imaging/1_First Responder/First Responder Analysis/Matlab Analysis/2022_12_06/Cytokine/stim 1'%input where to save the data
 Thr = .9   %input correaltion threshold for network analysis
-TitleChoice = 'HubAnalysis3_18_24' %Input title choice here
+TitleChoice = 'HubAnalysis_cyt_12_06_22' %Input title choice here
 %Input start and end time of video
 % starttime = Vidinfo(illy).starttime(lg); 
 % endtime = Vidinfo(illy).endtime(lg);
 
 % Load things: 
 load([filepath '/' 'CaWaveForm.mat'])
-R = bfopen([imagepath '/' 'untreated_islet2_11mM.czi'])
-load([filepath '/' 'untr_islet2_11mM_Masks.mat'])       %load masks
-load([filepath '/' 'untr_islet2_11mM_CellNumber.mat'])
+R = bfopen([imagepath '/' 'cyt_2mM_11mM_2mM_11mMKCl].czi'])
+load([filepath '/' 'stim 1\cyt stim 1_Masks.mat'])       %load masks
+load([filepath '/' 'stim 1\cyt stim 1_CellNumber.mat'])
 
 % 
 zstacks = 1         %how many z stacks
@@ -63,9 +63,12 @@ T = T(1:zstacks:end);
 %     ed=endtime;
 % end
 
-T = T(1:end);
+st = 550;
+ed = 1200;
+
+T = T(st:ed);
 images=double(IMG); % converts images to double precision
-images = images(:,:,cachannel:howmanychannel:end);
+images = images(:,:,st:howmanychannel:ed);
 RawImg=images(:,:,1); % assigns the first frame of the video to RawImg variable
 images = images(:,:,zz:zstacks:end);
 images = images(:,:,1:end-1);

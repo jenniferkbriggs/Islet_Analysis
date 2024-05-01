@@ -9,13 +9,13 @@ clc
 addpath('/Users/levittcl/Documents/GitHub/UniversalCode');
 addpath ('/Users/levittcl/Documents/GitHub/UniCode')
 
-cachannel = 2;
-nuchannel = 2;
-howmanychannel = 2;
+cachannel = 1;
+nuchannel = 1;
+howmanychannel = 1;
 
-filename = '/Volumes/Claire Hard Drive/DATA/FRAP/4 CONDITIONS/4 Conditions  Calcium Imaging/ca imaging islet 3 control good.czi'%file name can direct to '.mat' analysis file or imaging file
-savepath = '/Users/levittcl/Documents/HUB_ANALYSIS2/'
-savename = '/Hub_Analysis_1014_tryall.mat'
+filename = '/Volumes/CHL2021/2024_04_17 Human Islet DONOR 13/day 0/ca_islet5_11mM.czi'%file name can direct to '.mat' analysis file or imaging file
+savepath = '/Users/levittcl/Desktop/'
+savename = '/test.mat'
 
 
 
