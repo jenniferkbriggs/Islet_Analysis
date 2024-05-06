@@ -167,7 +167,7 @@ def run_networkbuild(itter, area):
     # -- final -- #
     bounds = op.Bounds(lb = 1e-5, ub = 1.22, keep_feasible=True)
     minimizer_kwargs = {"method":"L-BFGS-B", "bounds":bounds, "args":(G,  gj_conduct, gj_freq, gj_freq_s)}
-    final_weights = op.basinhopping(calc_conduct_optim, edgeweights_0, minimizer_kwargs=minimizer_kwargs, niter=1000)#ftol=1e-20,xtol=1e-20,maxiter=1e10)
+    final_weights = op.basinhopping(calc_conduct_optim, edgeweights_0, minimizer_kwargs=minimizer_kwargs, niter=10)#ftol=1e-20,xtol=1e-20,maxiter=1e10)
    # final_weights = op.minimize(calc_conduct_optim, edgeweights_0, args=(G,  gj_conduct, gj_freq, gj_freq_s), method='Nelder-Mead',bounds=bounds)#, ftol=1e-20,xtol=1e-20,maxiter=1e10)
 
     final_weights = final_weights.x
@@ -184,10 +184,10 @@ def run_networkbuild(itter, area):
 
 if __name__ == "__main__":
     i = 1
-    # for j in range(5000,1000,-1):
-    #     i = i-1 
-    #     run_networkbuild(i, j)
-    for j in range(6000,500000,10):
+    for j in range(100,5000,5):
         i = i+1 
         run_networkbuild(i, j)
+    # for j in range(4000,500000,1000):
+    #     i = i+1 
+    #     run_networkbuild(i, j)
 # %%
