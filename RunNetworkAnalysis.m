@@ -4,7 +4,7 @@ close all
 clear all
 
 %load cvs: 
-capath = '/Users/levittcl/Documents/Hub Analysis/hubanalysistest.mat\CaWaveForm.mat' %%%% Add .mat path here
+capath = '/Users/levittcl/Documents/HUB_ANALYSIS2/CaWaveForm.mat' %%%% Add .mat path here
 ca = importdata(capath);
 
 %To set the threshold, either manually set: 
@@ -27,8 +27,8 @@ Opts.Min = 2
 Threshold = findoptRth(calcium, Opts)
 
 
-
 Opts.figs = 0 %Set 1 if you want figures, 0 if not
+
 [degree, Adj, kpercent, histArrayPercShort,pval,Rij,s] = NetworkAnalysis(ca, Threshold, Opts)
 
 a = find(kpercent > 60); hubthreshold = (a(1)); %Find degree threshold for hubs
