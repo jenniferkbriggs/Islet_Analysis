@@ -1,7 +1,7 @@
 # Islet_Analysis
-This repository contains cleaned and commented code for general analyses conducted on islet timeseries in the Benninger Lab, University of Colorado Anschutz Medical Campus.
+This repository contains code (python and Matlab) for general analyses conducted on islet time series in the Benninger Lab, University of Colorado Anschutz Medical Campus.
 
-Note: The python code is executed under virtual environment for version control purposes. The best way to avoid bugs is to run it in the same virtual environment.
+Note: The Python code is executed in a virtual environment for version control. The best way to avoid bugs is to run it in the same virtual environment.
 The first time you clone this code, run: *conda env create -f environment.yml* in the terminal.
 Then, before every run type *conda activate ./envs* to activate the environment before you run the files.
 
