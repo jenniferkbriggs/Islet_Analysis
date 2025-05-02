@@ -35,3 +35,7 @@ The function file **LoadData** is an easy way to load time series data and get i
 
 ### Dependencies:
 easygui, McsPyDataTools
+
+## Cha Noma Model
+Our ChaNoma model is written primarily in C++. Info on this model can be found: Hraha, Thomas H., et al. "Phase transitions in the multi-cellular regulatory behavior of pancreatic islet excitability." PLoS computational biology 10.9 (2014): e1003819.
+
