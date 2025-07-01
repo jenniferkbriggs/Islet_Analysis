@@ -603,14 +603,14 @@ double box::CalculateCollision(int i, int j, vector<DIM> pboffset)
       if (C < -1E-12*(r_now_i+r_now_j))
 	{
 	  std::cout << "error, " << i << " and " << j << 
-	    " are overlapping at time "<< gtime << std::cout;
+	    " are overlapping at time "<< gtime << std::endl;
 	  std::cout << "A, B, C = "  << A << " " << " " << B << 
 	    " " << " " << C <<  std::endl;
 	  if (CheckSphereDiameters()>0)
 	    std::cout << "a sphere has grown greater than unit cell" << 
 	      std::endl;
 	  else
-	    std::cout << "unknown error" << std::cout;
+	    std::cout << "unknown error" << std::endl;
 	  exit(-1);
 	}
       

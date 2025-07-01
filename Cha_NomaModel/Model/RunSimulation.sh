@@ -1,8 +1,12 @@
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --time=16:00:00
-#SBATCH --partition=shas
+#SBATCH --partition=amilan
 #SBATCH --output=out_%j.out
+
+module purge
+module load gcc/14.2.0
+module load boost/1.86.0
 
 #Execute
 
