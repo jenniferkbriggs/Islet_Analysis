@@ -18,13 +18,13 @@ g++ neighbor.C spheres.C box.C sphere.C event.C heap.C read_input.C -o spheres
 ./spheres sphereInput
 
 #create islet
-g++ -I /projects/$USER/boost/boost_1_58_0/ -fopenmp GenerateSphere.cpp -o Islet
+g++ -I /projects/$USER/boost/boost_1_86_0/ -fopenmp GenerateSphere.cpp -o Islet
 ./Islet isletInput
 
 #compile and general random numbers
-g++ -std=c++0x -I /projects/$USER/boost/boost_1_58_0/ -fopenmp RandomVars.cpp -o RandomGenerator
+g++ -std=c++0x -I /projects/$USER/boost/boost_1_86_0/ -fopenmp RandomVars.cpp -o RandomGenerator
 ./RandomGenerator
 
 #run main code for solving differential equations
-g++ -I /projects/$USER/boost/boost_1_58_0/ -fopenmp MainFile.cpp -o Beta
+g++ -I /projects/$USER/boost/boost_1_86_0/ -fopenmp MainFile.cpp -o Beta
 ./Beta 0B 
