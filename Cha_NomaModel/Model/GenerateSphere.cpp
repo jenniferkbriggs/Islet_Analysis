@@ -10,7 +10,7 @@ using namespace std;
 
 
 ///////////////Set the amount of cells you want here/////////////////
-int cellNumber=1000;
+int cellNumber=100;
 struct sphereData
 {
 	//Loads the initial sphere packing of 4000 Cells
